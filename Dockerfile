@@ -1,11 +1,11 @@
-FROM quay.io/roboll/helmfile:v0.98.2
+FROM quay.io/roboll/helmfile:helm3-v0.99.0
 ARG CLOUD_SDK_VERSION=276.0.0
-ARG HELM_VERSION=2.11.0
+ARG HELM_GCS_VERSION=0.3.0
 
 ENV CLOUD_SDK_VERSION=$CLOUD_SDK_VERSION
 ENV CLOUDSDK_PYTHON=python3
-ENV HELM_VERSION=$HELM_VERSION
-
+ENV HELM_GCS_VERSION=${HELM_GCS_VERSION}
+ENV GOOGLE_APPLICATION_CREDENTIALS=/.google-credentials
 ENV PATH /google-cloud-sdk/bin:$PATH
 RUN apk add python3 && \
     curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
@@ -15,10 +15,7 @@ RUN apk add python3 && \
     gcloud config set component_manager/disable_update_check true && \
     gcloud config set metrics/environment github_docker_image && \
     gcloud --version && \
-    curl -L https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz |tar xvz && \
-    mv linux-amd64/helm /usr/local/bin/helm && \
-    chmod +x /usr/local/bin/helm && \
-    helm plugin install https://github.com/viglesiasce/helm-gcs.git --version v0.2.0
+    helm plugin install https://github.com/hayorov/helm-gcs --version ${HELM_GCS_VERSION}
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 

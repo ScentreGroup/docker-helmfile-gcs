@@ -5,8 +5,8 @@ GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/.google-crede
 set -euo pipefail
 
 gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
-if [ ! -z "${GKE_CLUSTER_NAME}" ]; then
-    gcloud container clusters get-credentials "${GKE_CLUSTER_NAME}" --region "$GCP_REGION" --project "${GCP_PROJECT}"
+if [ ! -z "${GCP_KUBE_CLUSTER}" ]; then
+    gcloud container clusters get-credentials "${GCP_KUBE_CLUSTER}" --region "$GCP_REGION" --project "${GCP_PROJECT}"
 fi
 
 exec helmfile $@
