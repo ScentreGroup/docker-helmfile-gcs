@@ -1,6 +1,14 @@
-FROM quay.io/roboll/helmfile:helm3-v0.99.0
+ARG HELMFILE_VERSION=v0.116.0
+FROM quay.io/roboll/helmfile:helm3-${HELMFILE_VERSION}
 ARG CLOUD_SDK_VERSION=276.0.0
 ARG HELM_GCS_VERSION=0.3.0
+ARG HELM_VERSION=v3.2.1
+ARG HELM_LOCATION="https://get.helm.sh"
+ARG HELM_FILENAME="helm-${HELM_VERSION}-linux-amd64.tar.gz"
+RUN wget ${HELM_LOCATION}/${HELM_FILENAME} && \
+    echo Extracting ${HELM_FILENAME}... && \
+    tar zxvf ${HELM_FILENAME} && mv /linux-amd64/helm /usr/local/bin/ && \
+    rm ${HELM_FILENAME} && rm -r /linux-amd64
 
 ENV CLOUD_SDK_VERSION=$CLOUD_SDK_VERSION
 ENV CLOUDSDK_PYTHON=python3
@@ -18,7 +26,7 @@ RUN apk add python3 && \
     helm plugin install https://github.com/hayorov/helm-gcs --version ${HELM_GCS_VERSION}
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
+COPY scripts/* /usr/local/bin/
 WORKDIR /app
 
 ENTRYPOINT ["entrypoint.sh"]

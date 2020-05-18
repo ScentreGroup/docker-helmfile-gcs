@@ -1,0 +1,18 @@
+#!/bin/bash
+
+TIMEOUT="${TIMEOUT:-3600s}"
+TARGET_JOB="$1"
+
+if [ -z "$TARGET_JOB" ]; then
+    echo "Usage: $0 <target_job>"
+    exit 1
+fi
+
+set -euo pipefail
+
+echo "Waiting up to $TIMEOUT for Job $1 in namespace $NAMESPACE to complete"
+
+kubectl wait --for=condition=complete \
+             --namespace="${NAMESPACE}" \
+             --timeout="${TIMEOUT}" \
+             "job/${TARGET_JOB}"

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+TIMEOUT="${TIMEOUT:-3600s}"
+TARGET_RELEASE="$1"
+
+if [ -z "$TARGET_RELEASE" ]; then
+    echo "Usage: $0 <TARGET_RELEASE>"
+    exit 1
+fi
+
+set -euo pipefail
+
+echo "Cleanup up jobs from previous release ${TARGET_RELEASE} from namespace ${NAMESPACE}"
+
+kubectl delete jobs --namespace="${NAMESPACE}" \
+                    --timeout="${TIMEOUT}" \
+                    --selector="app=${TARGET_RELEASE}"

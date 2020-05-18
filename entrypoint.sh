@@ -1,5 +1,9 @@
 #!/bin/sh
 
+helm version
+helmfile --version
+gcloud version
+
 GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/.google-credentials}"
 
 set -euo pipefail
